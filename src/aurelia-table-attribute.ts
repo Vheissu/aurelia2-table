@@ -5,7 +5,7 @@ export class AureliaTableCustomAttribute {
     @bindable data = [];
     @bindable({ mode: BindingMode.twoWay }) displayData;
 
-    @bindable filters;
+    @bindable filters = [];
 
     @bindable({ mode: BindingMode.twoWay }) currentPage;
     @bindable pageSize;
@@ -30,18 +30,6 @@ export class AureliaTableCustomAttribute {
     }
 
     bind() {
-        if (Array.isArray(this.filters)) {
-            for (let filter of this.filters) {
-                let observer = this.observer
-                    .getObserver(filter, 'value')
-                    .subscribe({
-                      handleChange: () => this.filterChanged()
-                    });
-
-                this.filterObservers.push(observer);
-            }
-        }
-
         this.api = {
             revealItem: (item) => this.revealItem(item),
         };
@@ -62,6 +50,7 @@ export class AureliaTableCustomAttribute {
         }
     }
 
+    @watch((x: AureliaTableCustomAttribute) => x.filters.map(f => f.value).join(''))
     filterChanged() {
         if (this.hasPagination()) {
             this.currentPage = 1;
@@ -87,7 +76,7 @@ export class AureliaTableCustomAttribute {
     /**
      * Applies all the plugins to the display data
      */
-     @watch((x: AureliaTableCustomAttribute) => x.data.length)
+    @watch((x: AureliaTableCustomAttribute) => x.data.length)
     applyPlugins() {
         if (!this.isAttached || !this.data) {
             return;
