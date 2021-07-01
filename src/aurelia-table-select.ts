@@ -1,23 +1,18 @@
-import { inject, bindingMode, BindingEngine } from 'aurelia';
-import { bindable, customAttribute } from '@aurelia/runtime-html';
-import { AureliaTableCustomAttribute } from './aurelia-table';
+import { bindable, customAttribute, BindingMode, ObserverLocator } from '@aurelia/runtime-html';
+import { AureliaTableCustomAttribute } from './aurelia-table-attribute';
 
-@inject(AureliaTableCustomAttribute, Element, BindingEngine)
 @customAttribute('aut-select')
 export class AutSelectCustomAttribute {
-
-  @bindable({defaultBindingMode: bindingMode.twoWay}) row;
+  @bindable({mode: BindingMode.twoWay}) row;
   @bindable mode = 'single';
   @bindable selectedClass = 'aut-row-selected';
   @bindable custom = false;
 
+  private rowSelectedListener;
+
   selectedSubscription;
 
-  constructor(auTable, element, bindingEngine) {
-    this.auTable = auTable;
-    this.element = element;
-    this.bindingEngine = bindingEngine;
-
+  constructor(private auTable: AureliaTableCustomAttribute, private element: Element, private observer: ObserverLocator) {
     this.rowSelectedListener = event => {
       this.handleRowSelected(event);
     };
@@ -25,11 +20,12 @@ export class AutSelectCustomAttribute {
 
   attached() {
     if (!this.custom) {
-      this.element.style.cursor = 'pointer';
+      (this.element as HTMLElement).style.cursor = 'pointer';
       this.element.addEventListener('click', this.rowSelectedListener);
     }
 
-    this.selectedSubscription = this.bindingEngine.propertyObserver(this.row, '$isSelected').subscribe(() => this.isSelectedChanged());
+    this.selectedSubscription = this.observer.getObserver(this.row, '$isSelected')
+      .subscribe({handleChange: () => this.isSelectedChanged() });
 
     this.setClass();
   }

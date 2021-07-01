@@ -1,81 +1,78 @@
-import { inject } from 'aurelia';
-import { bindable, ICustomElementViewModel, customAttribute } from '@aurelia/runtime-html';
+import { bindable, customAttribute } from '@aurelia/runtime-html';
 
 import { AureliaTableCustomAttribute } from './aurelia-table-attribute';
 
-@inject(AureliaTableCustomAttribute, Element)
 @customAttribute('aut-sort')
 export class AutSortCustomAttribute {
-
     @bindable key;
     @bindable custom;
     @bindable default;
 
-  order = 0;
-  orderClasses = ['aut-desc', 'aut-sortable', 'aut-asc'];
+    private rowSelectedListener;
+    private sortChangedListener;
 
-  ignoreEvent = false;
+    order = 0;
+    orderClasses = ['aut-desc', 'aut-sortable', 'aut-asc'];
 
-  constructor(auTable, element) {
-    this.auTable = auTable;
-    this.element = element;
+    ignoreEvent = false;
 
-    this.rowSelectedListener = () => {
-      this.handleHeaderClicked();
-    };
+    constructor(private auTable: AureliaTableCustomAttribute, private element: Element) {
+        this.rowSelectedListener = () => {
+            this.handleHeaderClicked();
+        };
 
-    this.sortChangedListener = () => {
-      this.handleSortChanged();
-    };
-  }
-
-  handleSortChanged() {
-    if (!this.ignoreEvent) {
-      this.order = 0;
-      this.setClass();
-    } else {
-      this.ignoreEvent = false;
+        this.sortChangedListener = () => {
+            this.handleSortChanged();
+        };
     }
-  }
 
-  attached() {
-    if (this.key || this.custom ) {
-      this.element.style.cursor = 'pointer';
-      this.element.classList.add('aut-sort');
-
-      this.element.addEventListener('click', this.rowSelectedListener);
-      this.auTable.addSortChangedListener(this.sortChangedListener);
-
-      this.handleDefault();
-      this.setClass();
+    handleSortChanged() {
+        if (!this.ignoreEvent) {
+            this.order = 0;
+            this.setClass();
+        } else {
+            this.ignoreEvent = false;
+        }
     }
-  }
 
-  detached() {
-    this.element.removeEventListener('click', this.rowSelectedListener);
-    this.auTable.removeSortChangedListener(this.sortChangedListener);
-  }
+    attached() {
+        if (this.key || this.custom) {
+            (this.element as HTMLElement).style.cursor = 'pointer';
+            this.element.classList.add('aut-sort');
 
-  handleDefault() {
-    if (this.default) {
-      this.order = this.default === 'desc' ? -1 : 1;
-      this.doSort();
+            this.element.addEventListener('click', this.rowSelectedListener);
+            this.auTable.addSortChangedListener(this.sortChangedListener);
+
+            this.handleDefault();
+            this.setClass();
+        }
     }
-  }
 
-  doSort() {
-    this.ignoreEvent = true;
-    this.auTable.sortChanged(this.key, this.custom, this.order);
-  }
+    detached() {
+        this.element.removeEventListener('click', this.rowSelectedListener);
+        this.auTable.removeSortChangedListener(this.sortChangedListener);
+    }
 
-  setClass() {
-    this.orderClasses.forEach(next => this.element.classList.remove(next));
-    this.element.classList.add(this.orderClasses[this.order + 1]);
-  }
+    handleDefault() {
+        if (this.default) {
+            this.order = this.default === 'desc' ? -1 : 1;
+            this.doSort();
+        }
+    }
 
-  handleHeaderClicked() {
-    this.order = this.order === 0 || this.order === -1 ? this.order + 1 : -1;
-    this.setClass();
-    this.doSort();
-  }
+    doSort() {
+        this.ignoreEvent = true;
+        this.auTable.sortChanged(this.key, this.custom, this.order);
+    }
+
+    setClass() {
+        this.orderClasses.forEach((next) => this.element.classList.remove(next));
+        this.element.classList.add(this.orderClasses[this.order + 1]);
+    }
+
+    handleHeaderClicked() {
+        this.order = this.order === 0 || this.order === -1 ? this.order + 1 : -1;
+        this.setClass();
+        this.doSort();
+    }
 }

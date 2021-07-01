@@ -1,5 +1,4 @@
-import { bindingMode } from 'aurelia';
-import { bindable, ICustomElementViewModel, customElement } from '@aurelia/runtime-html';
+import { bindable, ICustomElementViewModel, customElement, BindingMode } from '@aurelia/runtime-html';
 
 import template from './aurelia-table-pagination.html';
 
@@ -8,7 +7,7 @@ import template from './aurelia-table-pagination.html';
   template
 })
 export class AutPaginationCustomElement implements ICustomElementViewModel {
-  @bindable({defaultBindingMode: bindingMode.twoWay}) currentPage;
+  @bindable({mode: BindingMode.twoWay}) currentPage;
   @bindable pageSize;
   @bindable totalItems;
   @bindable hideSinglePage = true;
