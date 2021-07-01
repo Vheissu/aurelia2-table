@@ -1,9 +1,15 @@
 import { DI, IContainer, IRegistry } from '@aurelia/kernel';
 
 import { AureliaTableCustomAttribute } from './aurelia-table-attribute';
+import { AutSortCustomAttribute } from './aurelia-table-sort'; 
+import { AutSelectCustomAttribute } from './aurelia-table-select';
+import { AutPaginationCustomElement } from './aurelia-table-pagination'; 
 
 export const DefaultComponents: IRegistry[] = [
     AureliaTableCustomAttribute as unknown as IRegistry,
+    AutSortCustomAttribute as unknown as IRegistry,
+    AutSelectCustomAttribute as unknown as IRegistry,
+    AutPaginationCustomElement as unknown as IRegistry,
 ];
 
 const aureliaTableConfiguration = {
@@ -20,7 +26,7 @@ const aureliaTableConfiguration = {
 
 export const AureliaTableConfiguration = {
     customize(components: any[] = []) {
-        return { ...cardiganConfiguration };
+        return { ...aureliaTableConfiguration };
     },
     ...aureliaTableConfiguration
 };
