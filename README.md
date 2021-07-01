@@ -2,6 +2,8 @@
 
 This is a rewritten fork of the Aurelia Table plugin by @tochoromero — the original was a highly useful and simple to use table plugin for Aurelia, I wanted to port it to Aurelia 2. The core functionality remains the same, so all previous documentation for this works.
 
+The original repository can be found [here](https://github.com/tochoromero/aurelia-table) if you're looking for the Aurelia v1 plugin.
+
 Please visit the [project page](http://tochoromero.github.com/aurelia-table) for the documentation and examples.
 
 ## Installing it
@@ -33,4 +35,4 @@ Out of the box you will get:
  - Client side pagination
  - Row Selection
  
-For a complete list of features and examples please visit the [project page](http://tochoromero.github.com/aurelia-table).
+For a complete list of features and examples please visit the [project page](https://tochoromero.github.io/aurelia-table/).
