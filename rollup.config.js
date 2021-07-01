@@ -9,7 +9,7 @@ import html from "rollup-plugin-html";
 // import copy from 'rollup-plugin-copy';
 
 export default {
-    input: 'src/cardigan.ts',
+    input: 'src/aurelia-table.ts',
     output: [{
             file: pkg.main,
             format: 'cjs'
