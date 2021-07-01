@@ -2,6 +2,8 @@ import { bindable, customAttribute, BindingMode, watch } from '@aurelia/runtime-
 
 @customAttribute('aurelia-table')
 export class AureliaTableCustomAttribute {
+    @bindable dataSource = 'local';
+    
     @bindable data = [];
     @bindable({ mode: BindingMode.twoWay }) displayData;
 
@@ -35,9 +37,14 @@ export class AureliaTableCustomAttribute {
 
     @watch((x: AureliaTableCustomAttribute) => x.filters.map(f => f.value).join(''))
     filterChanged() {
+        if (this.dataSource === 'server') {
+            return;
+        }
+        
         if (this.hasPagination()) {
             this.currentPage = 1;
         }
+        
         this.applyPlugins();
     }
 
@@ -56,12 +63,21 @@ export class AureliaTableCustomAttribute {
         return [].concat(this.data);
     }
 
+    getPageData(localData) {
+        if (this.hasPagination()) {
+            this.beforePagination = [].concat(localData);
+            return this.doPaginate(localData);
+        }
+        
+        return localData;
+      }
+
     /**
      * Applies all the plugins to the display data
      */
     @watch((x: AureliaTableCustomAttribute) => x.data.length)
     applyPlugins() {
-        if (!this.isAttached || !this.data) {
+        if (!this.isAttached || !this.data || this.dataSource === 'server') {
             return;
         }
 
@@ -76,13 +92,7 @@ export class AureliaTableCustomAttribute {
         }
 
         this.totalItems = localData.length;
-
-        if (this.hasPagination()) {
-            this.beforePagination = [].concat(localData);
-            localData = this.doPaginate(localData);
-        }
-
-        this.displayData = localData;
+        this.displayData = this.getPageData(localData);
     }
 
     doFilter(toFilter) {
@@ -90,7 +100,7 @@ export class AureliaTableCustomAttribute {
 
         for (let item of toFilter) {
             let passed = true;
-
+            
             for (let filter of this.filters) {
                 if (!this.passFilter(item, filter)) {
                     passed = false;
@@ -102,7 +112,7 @@ export class AureliaTableCustomAttribute {
                 filteredData.push(item);
             }
         }
-
+        
         return filteredData;
     }
 
