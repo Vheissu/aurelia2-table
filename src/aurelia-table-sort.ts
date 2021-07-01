@@ -1,7 +1,10 @@
-import {inject, bindable} from 'aurelia';
-import {AureliaTableCustomAttribute} from './aurelia-table-attribute';
+import { inject } from 'aurelia';
+import { bindable, ICustomElementViewModel, customAttribute } from '@aurelia/runtime-html';
+
+import { AureliaTableCustomAttribute } from './aurelia-table-attribute';
 
 @inject(AureliaTableCustomAttribute, Element)
+@customAttribute('aut-sort')
 export class AutSortCustomAttribute {
 
     @bindable key;
