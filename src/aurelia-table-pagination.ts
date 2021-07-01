@@ -1,7 +1,13 @@
-import {bindable, bindingMode} from 'aurelia';
+import { bindingMode } from 'aurelia';
+import { bindable, ICustomElementViewModel, customElement } from '@aurelia/runtime-html';
 
-export class AutPaginationCustomElement {
+import template from './aurelia-table-pagination.html';
 
+@customElement({
+  name: 'aut-pagination',
+  template
+})
+export class AutPaginationCustomElement implements ICustomElementViewModel {
   @bindable({defaultBindingMode: bindingMode.twoWay}) currentPage;
   @bindable pageSize;
   @bindable totalItems;
