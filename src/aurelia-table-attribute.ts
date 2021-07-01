@@ -1,4 +1,4 @@
-import { bindable, customAttribute, BindingMode, ObserverLocator, watch } from '@aurelia/runtime-html';
+import { bindable, customAttribute, BindingMode, watch } from '@aurelia/runtime-html';
 
 @customAttribute('aurelia-table')
 export class AureliaTableCustomAttribute {
@@ -20,14 +20,7 @@ export class AureliaTableCustomAttribute {
     sortChangedListeners = [];
     beforePagination = [];
 
-    dataObserver;
-    filterObservers = [];
-
     private customSort;
-
-    constructor(private observer: ObserverLocator) {
-
-    }
 
     bind() {
         this.api = {
@@ -38,16 +31,6 @@ export class AureliaTableCustomAttribute {
     attached() {
         this.isAttached = true;
         this.applyPlugins();
-    }
-
-    detached() {
-        if (this.dataObserver) {
-            this.dataObserver.dispose();
-        }
-
-        for (let observer of this.filterObservers) {
-            observer.dispose();
-        }
     }
 
     @watch((x: AureliaTableCustomAttribute) => x.filters.map(f => f.value).join(''))
@@ -224,10 +207,6 @@ export class AureliaTableCustomAttribute {
     }
 
     dataChanged() {
-        if (this.dataObserver) {
-            this.dataObserver.dispose();
-        }
-
         this.applyPlugins();
     }
 

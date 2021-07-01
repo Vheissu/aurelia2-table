@@ -1,4 +1,4 @@
-import { bindable, customAttribute, BindingMode, ObserverLocator } from '@aurelia/runtime-html';
+import { bindable, customAttribute, BindingMode, watch } from '@aurelia/runtime-html';
 import { AureliaTableCustomAttribute } from './aurelia-table-attribute';
 
 @customAttribute('aut-select')
@@ -10,9 +10,7 @@ export class AutSelectCustomAttribute {
 
   private rowSelectedListener;
 
-  selectedSubscription;
-
-  constructor(private auTable: AureliaTableCustomAttribute, private element: Element, private observer: ObserverLocator) {
+  constructor(private auTable: AureliaTableCustomAttribute, private element: Element) {
     this.rowSelectedListener = event => {
       this.handleRowSelected(event);
     };
@@ -24,9 +22,6 @@ export class AutSelectCustomAttribute {
       this.element.addEventListener('click', this.rowSelectedListener);
     }
 
-    this.selectedSubscription = this.observer.getObserver(this.row, '$isSelected')
-      .subscribe({handleChange: () => this.isSelectedChanged() });
-
     this.setClass();
   }
 
@@ -34,8 +29,6 @@ export class AutSelectCustomAttribute {
     if (!this.custom) {
       this.element.removeEventListener('click', this.rowSelectedListener);
     }
-
-    this.selectedSubscription.dispose();
   }
 
   setClass() {
@@ -70,6 +63,7 @@ export class AutSelectCustomAttribute {
     this.element.dispatchEvent(selectedEvent);
   }
 
+  @watch((x: AutSelectCustomAttribute) => x.row.$isSelected)
   isSelectedChanged() {
     this.setClass();
 
