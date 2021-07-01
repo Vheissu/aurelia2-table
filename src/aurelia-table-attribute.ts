@@ -87,7 +87,7 @@ export class AureliaTableCustomAttribute {
     /**
      * Applies all the plugins to the display data
      */
-    @watch('data.length')
+     @watch((x: AureliaTableCustomAttribute) => x.data.length)
     applyPlugins() {
         if (!this.isAttached || !this.data) {
             return;
