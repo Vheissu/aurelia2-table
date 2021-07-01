@@ -5,6 +5,8 @@ import { AutSortCustomAttribute } from './aurelia-table-sort';
 import { AutSelectCustomAttribute } from './aurelia-table-select';
 import { AutPaginationCustomElement } from './aurelia-table-pagination'; 
 
+export { TableSettings, TableResult } from './aurelia-table-settings';
+
 export const DefaultComponents: IRegistry[] = [
     AureliaTableCustomAttribute as unknown as IRegistry,
     AutSortCustomAttribute as unknown as IRegistry,
