@@ -1,4 +1,5 @@
-import { bindable, customAttribute, BindingMode, watch } from '@aurelia/runtime-html';
+import { bindable, customAttribute, watch } from '@aurelia/runtime-html';
+import { BindingMode } from '@aurelia/runtime';
 
 @customAttribute('aurelia-table')
 export class AureliaTableCustomAttribute {

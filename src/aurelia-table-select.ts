@@ -1,4 +1,5 @@
-import { bindable, customAttribute, BindingMode, watch } from '@aurelia/runtime-html';
+import { bindable, customAttribute, watch } from '@aurelia/runtime-html';
+import { BindingMode } from '@aurelia/runtime';
 import { AureliaTableCustomAttribute } from './aurelia-table-attribute';
 
 @customAttribute('aut-select')

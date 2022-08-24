@@ -1,4 +1,5 @@
-import { bindable, ICustomElementViewModel, customElement, BindingMode } from '@aurelia/runtime-html';
+import { bindable, ICustomElementViewModel, customElement } from '@aurelia/runtime-html';
+import { BindingMode } from '@aurelia/runtime';
 
 import template from './aurelia-table-pagination.html';
 

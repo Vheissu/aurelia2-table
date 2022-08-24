@@ -1,4 +1,4 @@
-import { observable } from '@aurelia/runtime-html';
+import { observable } from '@aurelia/runtime';
 
 export class TableSettings {
     @observable pageSize = 10;
