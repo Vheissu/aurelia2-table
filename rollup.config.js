@@ -6,11 +6,13 @@ import autoprefixer from 'autoprefixer';
 import cssnano from 'cssnano';
 import postcssUrl from 'postcss-url';
 import html from "rollup-plugin-html";
+
 // import copy from 'rollup-plugin-copy';
 
 export default {
     input: 'src/aurelia-table.ts',
-    output: [{
+    output: [
+        {
             file: pkg.main,
             format: 'cjs'
         },
@@ -19,9 +21,7 @@ export default {
             format: 'es'
         }
     ],
-    external: [
-        ...Object.keys(pkg.dependencies || {})
-    ],
+    external: Object.keys(pkg.dependencies),
     plugins: [
         typescript({ typescript: require('typescript') }),
         postcss({
@@ -35,7 +35,11 @@ export default {
         }),
         html(),
         terser({
-            mangle: false
+            compress: {
+                defaults: false,
+            },
+            mangle: false,
+            keep_classnames: true,
         })
     ]
 }
