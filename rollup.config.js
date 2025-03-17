@@ -1,45 +1,68 @@
+import json from '@rollup/plugin-json';
+import terser from '@rollup/plugin-terser'; // Use default export
 import typescript from 'rollup-plugin-typescript2';
-import pkg from './package.json';
-import { terser } from 'rollup-plugin-terser';
-import postcss from 'rollup-plugin-postcss';
-import autoprefixer from 'autoprefixer';
-import cssnano from 'cssnano';
-import postcssUrl from 'postcss-url';
-import html from "rollup-plugin-html";
+import html from '@rollup/plugin-html';
+import { promises as fs } from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { preprocess } from '@aurelia/plugin-conventions';
 
-// import copy from 'rollup-plugin-copy';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-export default {
+function aureliaPreprocessPlugin() {
+  return {
+    name: 'aurelia-preprocess',
+    transform(code, id) {
+      const ext = path.extname(id);
+      if (ext === '.html') {
+        const result = preprocess({ path: id, contents: code }, {});
+        return {
+          code: result.code,
+          map: result.map
+        };
+      }
+      return null;
+    }
+  };
+}
+
+export default async () => {
+  const pkgPath = path.resolve(__dirname, './package.json');
+  const pkgContent = await fs.readFile(pkgPath, 'utf-8');
+  const pkg = JSON.parse(pkgContent);
+
+  const commonPlugins = [
+    json(),
+    aureliaPreprocessPlugin(),
+    typescript(),
+    terser({
+      compress: {
+        defaults: false,
+      },
+      mangle: false,
+      keep_classnames: true,
+    })
+  ];
+
+  const createConfig = (output) => ({
     input: 'src/aurelia-table.ts',
-    output: [
-        {
-            file: pkg.main,
-            format: 'cjs'
-        },
-        {
-            file: pkg.module,
-            format: 'es'
-        }
-    ],
+    output,
     external: Object.keys(pkg.dependencies),
     plugins: [
-        typescript({ typescript: require('typescript') }),
-        postcss({
-            inject: false,
-            extract: false,
-            plugins: [
-                autoprefixer(),
-                postcssUrl({ url: 'inline', encodeType: 'base64' }),
-                cssnano()
-            ]
-        }),
-        html(),
-        terser({
-            compress: {
-                defaults: false,
-            },
-            mangle: false,
-            keep_classnames: true,
-        })
+      ...commonPlugins,
+      ...(output.format === 'esm' ? [html({ include: '**/*.html' })] : [])
     ]
-}
+  });
+
+  return [
+    createConfig({
+      file: pkg.main.replace('.js', '.esm.js'),
+      format: 'esm'
+    }),
+    createConfig({
+      file: pkg.module,
+      format: 'esm'
+    })
+  ];
+};

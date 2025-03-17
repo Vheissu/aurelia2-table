@@ -1,6 +1,5 @@
-import { bindable, ICustomElementViewModel, customElement } from '@aurelia/runtime-html';
-import { BindingMode } from '@aurelia/runtime';
-
+import { bindable, BindingMode, ICustomElementViewModel, customElement, INode } from '@aurelia/runtime-html';
+import { resolve } from '@aurelia/kernel';
 import template from './aurelia-table-pagination.html';
 
 @customElement({
@@ -8,91 +7,89 @@ import template from './aurelia-table-pagination.html';
   template
 })
 export class AutPaginationCustomElement implements ICustomElementViewModel {
-    @bindable({mode: BindingMode.twoWay}) currentPage;
-    @bindable pageSize;
-    @bindable totalItems;
-    @bindable hideSinglePage = true;
-    @bindable paginationSize;
-    @bindable boundaryLinks = false;
-    @bindable firstText = 'First';
-    @bindable lastText = 'Last';
-    @bindable directionLinks = true;
-    @bindable previousText = '<';
-    @bindable nextText = '>';
+  @bindable({ mode: BindingMode.twoWay }) currentPage;
+  @bindable pageSize;
+  @bindable totalItems;
+  @bindable hideSinglePage = true;
+  @bindable paginationSize;
+  @bindable boundaryLinks = false;
+  @bindable firstText = 'First';
+  @bindable lastText = 'Last';
+  @bindable directionLinks = true;
+  @bindable previousText = '<';
+  @bindable nextText = '>';
 
-    totalPages = 1;
-    displayPages = [];
+  private element: HTMLElement = resolve(INode) as HTMLElement;
 
-    constructor(private element: Element) {
+  totalPages = 1;
+  displayPages = [];
 
+  binding() {
+    if (this.currentPage === undefined || this.currentPage === null || this.currentPage < 1) {
+      this.currentPage = 1;
     }
 
-    bind() {
-        if (this.currentPage === undefined || this.currentPage === null || this.currentPage < 1) {
-            this.currentPage = 1;
-        }
-
-        if (this.pageSize === undefined || this.pageSize === null || this.pageSize < 1) {
-            this.pageSize = 5;
-        }
-
-        this.calculatePages();
+    if (this.pageSize === undefined || this.pageSize === null || this.pageSize < 1) {
+      this.pageSize = 5;
     }
 
-    totalItemsChanged() {
-        this.currentPage = 1;
-        this.calculatePages();
+    this.calculatePages();
+  }
+
+  totalItemsChanged() {
+    this.currentPage = 1;
+    this.calculatePages();
+  }
+
+  pageSizeChanged() {
+    this.currentPage = 1;
+    this.calculatePages();
+  }
+
+  currentPageChanged() {
+    this.calculatePages();
+    this.dispatchPageChangedEvent();
+  }
+
+  dispatchPageChangedEvent() {
+    let event = new CustomEvent('page-changed', {
+      bubbles: true,
+      detail: {
+        currentPage: this.currentPage
+      }
+    });
+
+    this
+      .element
+      .dispatchEvent(event);
+  }
+
+  calculatePages() {
+    if (this.pageSize === 0) {
+      this.totalPages = 1
+    } else {
+      this.totalPages = this.totalItems <= this.pageSize ? 1 : Math.ceil(this.totalItems / this.pageSize);
     }
 
-    pageSizeChanged() {
-        this.currentPage = 1;
-        this.calculatePages();
+    if (isNaN(this.paginationSize) || this.paginationSize <= 0) {
+      this.displayAllPages();
+    } else {
+      this.limitVisiblePages();
+    }
+  }
+
+  displayAllPages() {
+    let displayPages = [];
+
+    for (let i = 1; i <= this.totalPages; i++) {
+      displayPages.push({
+        title: i.toString(),
+        value: i
+      });
     }
 
-    currentPageChanged() {
-        this.calculatePages();
-        this.dispatchPageChangedEvent();
-    }
-
-    dispatchPageChangedEvent() {
-        let event = new CustomEvent('page-changed', {
-            bubbles: true,
-            detail: {
-                currentPage: this.currentPage
-            }
-        });
-
-        this
-            .element
-            .dispatchEvent(event);
-    }
-
-    calculatePages() {
-        if (this.pageSize === 0) {
-            this.totalPages = 1
-        }else {
-            this.totalPages = this.totalItems <= this.pageSize ? 1 : Math.ceil(this.totalItems / this.pageSize);
-        }
-
-        if (isNaN(this.paginationSize) || this.paginationSize <= 0) {
-            this.displayAllPages();
-        } else {
-            this.limitVisiblePages();
-        }
-    }
-
-    displayAllPages() {
-        let displayPages = [];
-
-        for (let i = 1; i <= this.totalPages; i++) {
-            displayPages.push({
-            title: i.toString(),
-            value: i
-            });
-        }
-        
-        this.displayPages = displayPages;
-    }
+    this.displayPages = displayPages;
+  }
 
   limitVisiblePages() {
     let displayPages = [];
