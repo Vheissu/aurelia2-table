@@ -10,8 +10,9 @@ interface AureliaElement extends HTMLElement {
     };
 }
 
+export 
 @customAttribute('aut-sort')
-export class AutSortCustomAttribute {
+class AutSortCustomAttribute {
     @bindable key;
     @bindable custom;
     @bindable default;

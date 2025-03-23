@@ -1,7 +1,8 @@
 import { bindable, BindingMode, customAttribute, ICustomAttributeViewModel, watch } from '@aurelia/runtime-html';
 
+export 
 @customAttribute('aurelia-table')
-export class AureliaTableCustomAttribute implements ICustomAttributeViewModel {
+class AureliaTableCustomAttribute implements ICustomAttributeViewModel {
     @bindable({ mode: BindingMode.oneTime }) dataSource = 'local';
 
     @bindable({ mode: BindingMode.oneTime }) data = [];

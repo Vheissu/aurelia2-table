@@ -1,8 +1,9 @@
 import { bindable, BindingMode, customAttribute, watch } from '@aurelia/runtime-html';
 import { AureliaTableCustomAttribute } from './aurelia-table-attribute';
 
+export 
 @customAttribute('aut-select')
-export class AutSelectCustomAttribute {
+class AutSelectCustomAttribute {
   @bindable({mode: BindingMode.twoWay}) row;
   @bindable mode = 'single';
   @bindable selectedClass = 'aut-row-selected';

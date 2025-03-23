@@ -2,11 +2,12 @@ import { bindable, BindingMode, ICustomElementViewModel, customElement, INode } 
 import { resolve } from '@aurelia/kernel';
 import template from './aurelia-table-pagination.html';
 
+export 
 @customElement({
   name: 'aut-pagination',
   template
 })
-export class AutPaginationCustomElement implements ICustomElementViewModel {
+class AutPaginationCustomElement implements ICustomElementViewModel {
   @bindable({ mode: BindingMode.twoWay }) currentPage;
   @bindable pageSize;
   @bindable totalItems;

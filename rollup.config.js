@@ -51,15 +51,11 @@ export default async () => {
     external: Object.keys(pkg.dependencies),
     plugins: [
       ...commonPlugins,
-      ...(output.format === 'esm' ? [html({ include: '**/*.html' })] : [])
+      html({ include: '**/*.html' })
     ]
   });
 
   return [
-    createConfig({
-      file: pkg.main.replace('.js', '.esm.js'),
-      format: 'esm'
-    }),
     createConfig({
       file: pkg.module,
       format: 'esm'
