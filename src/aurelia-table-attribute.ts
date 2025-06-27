@@ -5,7 +5,7 @@ export
 class AureliaTableCustomAttribute implements ICustomAttributeViewModel {
     @bindable({ mode: BindingMode.oneTime }) dataSource = 'local';
 
-    @bindable({ mode: BindingMode.oneTime }) data = [];
+    @bindable({ mode: BindingMode.toView }) data = [];
     @bindable({ mode: BindingMode.twoWay }) displayData;
 
     @bindable({ mode: BindingMode.oneTime }) filters = [];
@@ -76,7 +76,7 @@ class AureliaTableCustomAttribute implements ICustomAttributeViewModel {
     /**
      * Applies all the plugins to the display data
      */
-    @watch((x: AureliaTableCustomAttribute) => x.data.length)
+    @watch((x: AureliaTableCustomAttribute) => x.data?.length ?? false)
     applyPlugins() {
         if (!this.isAttached || !this.data || this.dataSource === 'server') {
             return;
