@@ -59,6 +59,10 @@ export default async () => {
     createConfig({
       file: pkg.module,
       format: 'esm'
+    }),
+    createConfig({
+        file: pkg.main,
+        format: 'es'
     })
   ];
 };
