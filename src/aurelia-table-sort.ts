@@ -52,12 +52,12 @@ class AutSortCustomAttribute {
             throw new Error('AureliaTableCustomAttribute not found on parent table element.');
         }
 
-        if (this.key || this.custom) {
+        if ((this.key || this.custom) && this.element != null) {
             (this.element as HTMLElement).style.cursor = 'pointer';
             this.element.classList.add('aut-sort');
 
             this.element.addEventListener('click', this.rowSelectedListener);
-            this.auTable.addSortChangedListener(this.sortChangedListener);
+            this.auTable?.addSortChangedListener(this.sortChangedListener);
 
             this.handleDefault();
             this.setClass();
@@ -65,8 +65,8 @@ class AutSortCustomAttribute {
     }
 
     detached() {
-        this.element.removeEventListener('click', this.rowSelectedListener);
-        this.auTable.removeSortChangedListener(this.sortChangedListener);
+        this.element?.removeEventListener('click', this.rowSelectedListener);
+        this.auTable?.removeSortChangedListener(this.sortChangedListener);
     }
 
     handleDefault() {
@@ -77,17 +77,17 @@ class AutSortCustomAttribute {
     }
 
     doSort() {
-        if (this.auTable.dataSource === 'server') {
+        if (this.auTable?.dataSource === 'server') {
             return;
         }
 
         this.ignoreEvent = true;
-        this.auTable.sortChanged(this.key, this.custom, this.order);
+        this.auTable?.sortChanged(this.key, this.custom, this.order);
     }
 
     setClass() {
-        this.orderClasses.forEach((next) => this.element.classList.remove(next));
-        this.element.classList.add(this.orderClasses[this.order + 1]);
+        this.orderClasses.forEach((next) => this.element?.classList.remove(next));
+        this.element?.classList.add(this.orderClasses[this.order + 1]);
     }
 
     handleHeaderClicked() {
@@ -97,7 +97,7 @@ class AutSortCustomAttribute {
     }
 
     private findAureliaTableCustomAttribute(): AureliaTableCustomAttribute | null {
-        let currentElement: AureliaElement | null = this.element as AureliaElement;
+        let currentElement: AureliaElement | null = this.element != null ? this.element as AureliaElement : null;
 
         while (currentElement) {
             const auTable = currentElement.$au?.['au:resource:custom-attribute:aurelia-table']?.viewModel as AureliaTableCustomAttribute;
