@@ -36,3 +36,11 @@ Out of the box you will get:
  - Row Selection
  
 For a complete list of features and examples please visit the [project page](https://tochoromero.github.io/aurelia-table/).
+
+## Local build
+Update the package.json to a new version
+Update the package.json references
+npm install
+npm run build
+npm run build:types
+npm pack
