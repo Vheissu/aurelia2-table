@@ -1,3 +1,7 @@
+# NEW HOME
+
+This plugin now lives in a monorepo here alongside other Aurelia 2 plugins : https://github.com/Vheissu/aurelia2-plugins
+
 ## Aurelia 2
 
 This is a rewritten fork of the Aurelia Table plugin by @tochoromero — the original was a highly useful and simple to use table plugin for Aurelia, I wanted to port it to Aurelia 2. The core functionality remains the same, so all previous documentation for this works.
