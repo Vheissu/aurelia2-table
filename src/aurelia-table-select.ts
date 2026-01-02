@@ -1,9 +1,9 @@
-import { bindable, customAttribute, watch } from '@aurelia/runtime-html';
-import { BindingMode } from '@aurelia/runtime';
+import { bindable, BindingMode, customAttribute, watch } from '@aurelia/runtime-html';
 import { AureliaTableCustomAttribute } from './aurelia-table-attribute';
 
+export 
 @customAttribute('aut-select')
-export class AutSelectCustomAttribute {
+class AutSelectCustomAttribute {
   @bindable({mode: BindingMode.twoWay}) row;
   @bindable mode = 'single';
   @bindable selectedClass = 'aut-row-selected';
@@ -18,7 +18,7 @@ export class AutSelectCustomAttribute {
   }
 
   attached() {
-    if (!this.custom) {
+    if (!this.custom && this.element != null) {
       (this.element as HTMLElement).style.cursor = 'pointer';
       this.element.addEventListener('click', this.rowSelectedListener);
     }
@@ -27,16 +27,16 @@ export class AutSelectCustomAttribute {
   }
 
   detached() {
-    if (!this.custom) {
+    if (!this.custom && this.element != null) {
       this.element.removeEventListener('click', this.rowSelectedListener);
     }
   }
 
   setClass() {
     if (this.row.$isSelected) {
-      this.element.classList.add(this.selectedClass);
+      this.element?.classList.add(this.selectedClass);
     } else {
-      this.element.classList.remove(this.selectedClass);
+      this.element?.classList.remove(this.selectedClass);
     }
   }
 
@@ -61,7 +61,7 @@ export class AutSelectCustomAttribute {
         detail: {row: this.row}
       });
     }
-    this.element.dispatchEvent(selectedEvent);
+    this.element?.dispatchEvent(selectedEvent);
   }
 
   @watch((x: AutSelectCustomAttribute) => x.row.$isSelected)
@@ -78,7 +78,7 @@ export class AutSelectCustomAttribute {
   }
 
   deselectAll() {
-    this.auTable.data.forEach(item => {
+    this.auTable?.data?.forEach(item => {
       if (item !== this.row) {
         item.$isSelected = false;
       }
